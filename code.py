@@ -8,7 +8,14 @@ from typing import List, Optional
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.prompts import PromptTemplate
 
+
+import os
 # Load environment variables if needed
+
+load_dotenv()
+api_key = os.getenv("GOOGLE_API_KEY")
+
+
 load_dotenv()
 
 # Step 1: Load PDF text
@@ -68,7 +75,7 @@ Text:
 )
 
 # Step 5: Initialize Gemini model
-model = ChatGoogleGenerativeAI(model='gemini-2.5-flash', api_key= 'AIzaSyCS36bFxt4Y08dqom9MqrsGNEStZ6MmIPM')
+model = ChatGoogleGenerativeAI(model='gemini-2.5-flash', api_key= api_key)
 
 # Step 6: Create chain
 chain = prompt | model | parser
@@ -79,7 +86,6 @@ result = chain.invoke({'text': text})
 # Step 8: Convert to DataFrame
 df = pd.DataFrame([entry.dict() for entry in result.items])
 print(f"✅ Extracted {len(df)} rows")
-print(df.head())
 
 # Optional: Save to CSV
-df.to_csv("marine_schedule_ai.csv", index=False)
+df.to_csv("marine_schedule.csv", index=False)
